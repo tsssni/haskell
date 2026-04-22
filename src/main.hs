@@ -52,3 +52,85 @@ example = \xs -> map lookupLetter (mapApply offsets xs)
         14 -> 0
         20 -> 4
         n' -> n'
+
+-- chapter 4
+
+data BinaryTree a = Leaf | Branch (BinaryTree a) a (BinaryTree a)
+
+showStringTree :: BinaryTree String -> String
+showStringTree tree = case tree of
+  Leaf -> ""
+  Branch left node right -> showStringTree left <> node <> showStringTree right
+
+addElementToIntTree :: BinaryTree Int -> Int -> BinaryTree Int
+addElementToIntTree tree value = case tree of
+  Leaf -> Branch Leaf value Leaf
+  Branch left node right ->
+    if value < node
+      then
+        Branch (addElementToIntTree left value) node right
+      else
+        Branch left node (addElementToIntTree right value)
+
+doesIntExist :: BinaryTree Int -> Int -> Bool
+doesIntExist tree value = case tree of
+  Leaf -> False
+  Branch left node right ->
+    False
+      || node == value
+      || doesIntExist left value
+      || doesIntExist right value
+
+data Expr
+  = Lit Int
+  | Sub Expr Expr
+  | Add Expr Expr
+  | Mul Expr Expr
+  | Div Expr Expr
+
+safeEval :: Expr -> Either String Int
+safeEval expr =
+  case expr of
+    Lit num -> Right num
+    Add arg1 arg2 -> eval' (+) arg1 arg2
+    Sub arg1 arg2 -> eval' (-) arg1 arg2
+    Mul arg1 arg2 -> eval' (*) arg1 arg2
+    Div arg1 arg2 -> eval'' div arg1 arg2
+  where
+    isInt (Left _) = False
+    isInt (Right _) = True
+    getInt (Right x) = x
+    message = Left "Error: division by zero"
+
+    eval' :: (Int -> Int -> Int) -> Expr -> Expr -> Either String Int
+    eval' operator arg1 arg2 =
+      let left = safeEval arg1
+          right = safeEval arg2
+          valid = isInt left && isInt right
+          result = Right $ operator (getInt left) (getInt right)
+       in if valid then result else message
+
+    eval'' :: (Int -> Int -> Int) -> Expr -> Expr -> Either String Int
+    eval'' operator arg1 arg2 =
+      let result = eval' operator arg1 arg2
+          right = safeEval arg2
+          valid = isInt right && (getInt right) /= 0
+       in if valid then result else message
+
+prettyPrint :: Expr -> String
+prettyPrint expr = (print expr) <> " = " <> result
+  where
+    result = case (safeEval expr) of
+      Left x -> x
+      Right x -> show x
+    print expr = case expr of
+      Lit x -> parse expr
+      Sub left right -> connect left " - " right
+      Add left right -> connect left " + " right
+      Mul left right -> connect left " × " right
+      Div left right -> connect left " ÷ " right
+      where
+        parse expr = case expr of
+          Lit x -> show x
+          _ -> "( " <> print expr <> " )"
+        connect left op right = (parse left) <> op <> (parse right)
