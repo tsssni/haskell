@@ -1,0 +1,41 @@
+cabal-version:      3.0
+name:               effective
+version:            0.1.0.0
+-- synopsis:
+-- description:
+license:            GPL-3.0-only
+license-file:       LICENSE
+author:             tsssni
+maintainer:         dingyongyu2002@foxmail.com
+category:           Graphics
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall -Wno-name-shadowing -Wno-incomplete-patterns -Wno-incomplete-uni-patterns -Wno-type-defaults
+
+library
+    import:           warnings
+    exposed-modules:  Effective
+    build-depends:    base ^>=4.20.2.0
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable haskell
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.20.2.0,
+        effective
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+test-suite haskell-test
+    import:           warnings
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.20.2.0,
+        effective

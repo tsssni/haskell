@@ -1,5 +1,9 @@
 /*
+!app/
 !src/
+!test/
 !flake.nix
 !flake.lock
 !.nvim.lua
+!haskell.cabal
+!LICENSE

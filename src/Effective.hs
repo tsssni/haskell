@@ -1,25 +1,37 @@
+module Effective where
+
 -- chapter 1
 
+factorial :: (Num a, Eq a) => a -> a
 factorial x = if x == 1 then 1 else x * factorial (x - 1)
 
+fibonacci :: (Num a, Ord a) => a -> a
 fibonacci x = if x < 2 then x else fibonacci (x - 1) + fibonacci (x - 2)
 
+durry :: ((a, b) -> c) -> a -> b -> c
 durry f x y = f (x, y)
 
+undurry :: (a -> b -> c) -> (a, b) -> c
 undurry f x = let (x1, x2) = x in f x1 x2
 
 -- chapter 2
 
+reversel :: [a] -> [a]
 reversel xs = foldl (\xs x -> x : xs) [] xs
 
+reverser :: [a] -> [a]
 reverser xs = foldr (\x xs -> xs ++ [x]) [] xs
 
+zipw :: (a -> b -> c) -> [a] -> [b] -> [c]
 zipw f xs ys = [f x y | (x, y) <- zip xs ys]
 
+zipf :: (a -> b -> c) -> [a] -> [b] -> [c]
 zipf f xs ys = snd $ foldl (\(y : ys, zs) x -> (ys, zs ++ [f x y])) (ys, []) xs
 
+concatMapl :: (a -> [b]) -> [a] -> [b]
 concatMapl f xxs = foldl (\y x -> (foldl (\xs x -> xs ++ [x]) y (f x))) [] xxs
 
+concatMapr :: (a -> [b]) -> [a] -> [b]
 concatMapr f xxs = foldr (\x y -> (foldr (\x xs -> x : xs) y (f x))) [] xxs
 
 -- chapter 3
@@ -124,7 +136,7 @@ prettyPrint expr = (print expr) <> " = " <> result
       Left x -> x
       Right x -> show x
     print expr = case expr of
-      Lit x -> parse expr
+      Lit _ -> parse expr
       Sub left right -> connect left " - " right
       Add left right -> connect left " + " right
       Mul left right -> connect left " × " right
