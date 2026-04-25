@@ -1,7 +1,5 @@
 module Effective where
 
--- chapter 1
-
 factorial :: (Num a, Eq a) => a -> a
 factorial x = if x == 1 then 1 else x * factorial (x - 1)
 
@@ -13,8 +11,6 @@ durry f x y = f (x, y)
 
 undurry :: (a -> b -> c) -> (a, b) -> c
 undurry f x = let (x1, x2) = x in f x1 x2
-
--- chapter 2
 
 reversel :: [a] -> [a]
 reversel xs = foldl (\xs x -> x : xs) [] xs
@@ -33,8 +29,6 @@ concatMapl f xxs = foldl (\y x -> (foldl (\xs x -> xs ++ [x]) y (f x))) [] xxs
 
 concatMapr :: (a -> [b]) -> [a] -> [b]
 concatMapr f xxs = foldr (\x y -> (foldr (\x xs -> x : xs) y (f x))) [] xxs
-
--- chapter 3
 
 mapApply :: [a -> b] -> [a] -> [b]
 mapApply toApply = concatMap (\input -> map ($ input) toApply)
@@ -64,8 +58,6 @@ example = \xs -> map lookupLetter (mapApply offsets xs)
         14 -> 0
         20 -> 4
         n' -> n'
-
--- chapter 4
 
 data BinaryTree a = Leaf | Branch (BinaryTree a) a (BinaryTree a)
 
